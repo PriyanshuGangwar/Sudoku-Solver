@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
-import SudokuBoard from './SudukoBoard';
+import SudukoBoard from './SudukoBoard';
+import SudukoSolver from './SudukoSolver';
 import generator from 'sudoku';
-import { Jumbotron, Button } from 'reactstrap';
-//window.generator = generator;
+import { Button, Jumbotron } from 'reactstrap';
+
+window.generator = generator;
 
 function GenerateSudoku(){
     var rows = generator.makepuzzle();
-    console.log(rows);
     const board = { rows : []};
-
     for(var i = 0; i < 9 ; i++){
       const row = {cols: []}; 
       for(var j = 0; j < 9 ; j++){
@@ -29,21 +29,49 @@ function GenerateSudoku(){
     return board;
 }
 
+
 class Main extends Component{
     constructor(props){
       super(props)
-      this.state = {
+      this.state ={
           board: GenerateSudoku()
-        }
+      }
+    }
+
+    
+    handleChange = (event)=>{
+      var board = this.state.board;
+      board.rows[event.col.row].cols[event.col.col].val = event.val;
+      this.setState({
+        board: board
+      })
+    }
+
+    handleChangeSolver = (event) =>{
+      const board = event.board;
+      this.setState({
+        board: board
+      })
+    }
+
+    Reset = () =>{
+      const board = GenerateSudoku();
+      this.setState({
+        board: board
+      })
     }
 
     render() {
+      
       return(
         <div className = "Container">
           <Jumbotron>
             <h1>Suduko</h1>
           </Jumbotron>
-          <SudokuBoard board = {this.state.board} />
+          <SudukoBoard board = {this.state.board} onChange = {this.handleChange} />
+          <SudukoSolver board = {this.state.board} onChange = {this.handleChangeSolver} />
+          <div className = "button"><Button color="danger" onClick = {() => this.Reset()} >Reset</Button></div>
+          
         </div>
       )
     }
