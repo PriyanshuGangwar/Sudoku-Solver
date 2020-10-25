@@ -1,23 +1,42 @@
 import React, {Component} from 'react';
 import {Button} from 'reactstrap';
 
+var animations = []
+var to;
+
 class Solver extends Component{
     
 
     solver(board){
-        
         var v = suduko(board);
         if(!v)
             alert("Wrong Entry!!!");
-        console.log("board = ",board);
-        this.props.onChange({...this.props, board: board});
+            
+        animations.map(bo => {
+            setTimeout(()=>{ 
+                this.props.onChange({...this.props, board: bo, to:to});
+            },0.01);
+        })
+            
     }
     
+    solution(board){
+            var v = sudukos(board);
+            if(!v)
+                alert("Wrong Entry!!!");
+            
+            this.props.onChange({...this.props, board: board});
+        
+    }
+    
+   
+
     render(){
         var {board} = this.props;
         return(
-            <div className = "button">
-                <Button color="primary" onClick = {() => this.solver(board)} >Solve</Button>
+            <div>
+                <Button color="primary" onClick = {() => this.solver(board)} style ={{marginLeft: '20px' ,marginRight: '20px',marginBottom: '10px'}} >Solve</Button>
+                <Button color="primary" onClick = {() => this.solution(board) }  style ={{marginLeft: '20px' ,marginRight: '20px', marginBottom: '10px'}} >Solution</Button>
             </div>
         );
         
@@ -29,9 +48,9 @@ export default Solver;
 
 
 function suduko(board){
-
-    
     let points = {i:0,j:0};
+    let deepClone = JSON.parse(JSON.stringify(board));
+    animations.push(deepClone);
     var t = isempty(board,points);
     if(!t)
     {
@@ -43,6 +62,27 @@ function suduko(board){
      if(isvalid(n,board,i,j))
         { board.rows[i].cols[j].val = n;
           if(suduko(board))
+            return true;
+          else
+          board.rows[i].cols[j].val = null;
+        }
+    return false;
+}
+
+
+function sudukos(board){
+    let points = {i:0,j:0};
+    var t = isempty(board,points);
+    if(!t)
+    {
+        return true;
+    }
+    var i = points.i;
+    var j = points.j;
+    for(var n=1;n <= 9;n++)
+     if(isvalid(n,board,i,j))
+        { board.rows[i].cols[j].val = n;
+          if(sudukos(board))
             return true;
           else
           board.rows[i].cols[j].val = null;

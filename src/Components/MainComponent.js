@@ -34,7 +34,8 @@ class Main extends Component{
     constructor(props){
       super(props)
       this.state ={
-          board: GenerateSudoku()
+          board: GenerateSudoku(),
+          to : 0
       }
     }
 
@@ -65,13 +66,13 @@ class Main extends Component{
       
       return(
         <div className = "Container">
-          <Jumbotron>
-            <h1>Suduko</h1>
+          <Jumbotron style = {{backgroundColor:'#6699ff'}}>
+            <p id = "heading">Suduko</p>
           </Jumbotron>
           <SudukoBoard board = {this.state.board} onChange = {this.handleChange} />
-          <SudukoSolver board = {this.state.board} onChange = {this.handleChangeSolver} />
-          <div className = "button"><Button color="danger" onClick = {() => this.Reset()} >Reset</Button></div>
-          
+          <div className = "button"><Button color="danger" onClick = {() => this.Reset()} style ={{marginLeft: '20px' ,marginRight: '20px',marginBottom: '10px'}} >Reset</Button>
+            <SudukoSolver board = {this.state.board} onChange = {this.handleChangeSolver} to = {this.to}/>
+            </div>
         </div>
       )
     }
